@@ -1,5 +1,7 @@
 VERSION ?= ${newrev}
 NAME ?= nats_uptime_bot
+PGUSER ?= postgres
+PGPASSWORD ?= postgres
 FULL_NAME = ${NAME}:${VERSION}
 
 
@@ -29,6 +31,15 @@ init:
 	./manage.py makemigrations
 	./manage.py migrate
 
-
 test:
 	./manage.py test
+
+
+compose:
+	docker compose up
+
+shell:
+	docker compose exec nats_uptime_bot bash
+
+db:
+	docker compose exec db bash -c "PGPASSWORD=${PGPASSWORD} psql -U${PGUSER} -d ${NAME}"
