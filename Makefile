@@ -1,7 +1,7 @@
 VERSION ?= ${newrev}
 NAME ?= nats_uptime_bot
-PGUSER ?= postgres
-PGPASSWORD ?= postgres
+PGUSER ?= ${NAME}
+PGPASSWORD ?= admin
 FULL_NAME = ${NAME}:${VERSION}
 
 
@@ -36,10 +36,10 @@ test:
 
 
 compose:
-	docker compose up
+	docker-compose up
 
 shell:
-	docker compose exec nats_uptime_bot bash
+	docker-compose exec nats_uptime_bot sh
 
 db:
-	docker compose exec db bash -c "PGPASSWORD=${PGPASSWORD} psql -U${PGUSER} -d ${NAME}"
+	docker-compose exec postgres sh -c "PGPASSWORD=${PGPASSWORD} psql -U${PGUSER} -d ${NAME}"
