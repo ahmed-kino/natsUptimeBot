@@ -36,10 +36,10 @@ test:
 
 
 compose:
-	docker-compose up
+	docker compose up
 
 shell:
-	docker-compose exec nats_uptime_bot sh
+	docker compose exec nats_uptime_bot sh
 
 db:
-	docker-compose exec postgres sh -c "PGPASSWORD=${PGPASSWORD} psql -U${PGUSER} -d ${NAME}"
+	docker compose exec postgres sh -c "PGPASSWORD=${PGPASSWORD} psql -U${PGUSER} -d ${NAME}"
