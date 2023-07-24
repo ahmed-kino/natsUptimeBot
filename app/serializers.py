@@ -5,7 +5,7 @@ from .models import Target, Check, Result
 class TargetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Target
-        fields = ["id", "domain_name"]
+        fields = "__all__"
 
 
 class CheckSerializer(serializers.ModelSerializer):
@@ -17,11 +17,12 @@ class CheckSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         target_data = validated_data.pop("target")
-        target_serializer = TargetSerializer(data=target_data)
-        target_serializer.is_valid(raise_exception=True)
-        target_instance = target_serializer.save()
-
-        check = Check.objects.create(target=target_instance, **validated_data)
+        target, created = Target.objects.get_or_create(**target_data)
+        if created:
+            print(
+                f"target {target.domain_name} did not exist so a new target got created in the DB"
+            )
+        check = Check.objects.create(target=target, **validated_data)
         return check
 
 
@@ -34,9 +35,8 @@ class ResultSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         check_data = validated_data.pop("check_field")
-        check_serializer = CheckSerializer(data=check_data)
-        check_serializer.is_valid(raise_exception=True)
-        check_instance = check_serializer.save()
-
+        target_data = check_data.pop("target")
+        target_instance = Target.objects.get(**target_data)
+        check_instance = Check.objects.get(target=target_instance, **check_data)
         result = Result.objects.create(check_field=check_instance, **validated_data)
         return result

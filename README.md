@@ -53,6 +53,11 @@ class Result(models.Model):
 * Run `make shell` to execute into the container
 * Run format `make format`
 
+## Tests
+
+* Run `make shell` to execute into the container
+* Run tests `make test`
+
 ## Reset DB:
 
 * Run `make shell` to execute into the container
