@@ -3,6 +3,7 @@ version: "3.9"
 services:
   nats_uptime_bot:
     build: .
+    # stdin_open: true
     command:  ./entrypoint.sh
     env_file: ./.envrc
     volumes:

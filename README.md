@@ -221,3 +221,9 @@ class Result(models.Model):
        ...
    ]
    ```
+
+4. if you want to probe certain check
+
+    ```sh
+    curl -X POST -H "Content-Type: application/json" -d '{"check_id": 1}' http://localhost:8000/api/check-uptime/
+    ```

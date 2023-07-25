@@ -6,6 +6,7 @@ from .views import (
     CheckRetrieveUpdateDestroyView,
     ResultListCreateView,
     ResultRetrieveUpdateDestroyView,
+    UptimeCheckView,
 )
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
         ResultRetrieveUpdateDestroyView.as_view(),
         name="result-detail",
     ),
+    path("check-uptime/", UptimeCheckView.as_view(), name="uptime-check"),
 ]
