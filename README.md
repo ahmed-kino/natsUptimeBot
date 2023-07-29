@@ -221,3 +221,9 @@ class Result(models.Model):
        ...
    ]
    ```
+
+4. if you want to probe http check for a specific target
+
+    ```sh
+        ./checks/http_check.py -d "https://api.github.com"
+    ```
