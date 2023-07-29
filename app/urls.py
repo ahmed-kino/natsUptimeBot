@@ -1,11 +1,12 @@
 from django.urls import path
+
 from .views import (
-    TargetListCreateView,
-    TargetRetrieveUpdateDestroyView,
     CheckListCreateView,
     CheckRetrieveUpdateDestroyView,
     ResultListCreateView,
     ResultRetrieveUpdateDestroyView,
+    TargetListCreateView,
+    TargetRetrieveUpdateDestroyView,
 )
 
 urlpatterns = [

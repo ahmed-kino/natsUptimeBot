@@ -1,6 +1,7 @@
 from rest_framework import generics
-from .models import Target, Check, Result
-from .serializers import TargetSerializer, CheckSerializer, ResultSerializer
+
+from .models import Check, Result, Target
+from .serializers import CheckSerializer, ResultSerializer, TargetSerializer
 
 
 class TargetListCreateView(generics.ListCreateAPIView):

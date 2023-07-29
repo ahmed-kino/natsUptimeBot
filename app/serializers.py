@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Target, Check, Result
+
+from .models import Check, Result, Target
 
 
 class TargetSerializer(serializers.ModelSerializer):

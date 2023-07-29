@@ -1,7 +1,8 @@
-from django.test import TestCase
 from django.forms.models import model_to_dict
-from .models import Target, Check, Result
-from .serializers import TargetSerializer, CheckSerializer, ResultSerializer
+from django.test import TestCase
+
+from .models import Check, Result, Target
+from .serializers import CheckSerializer, ResultSerializer, TargetSerializer
 
 
 class TargetSerializerTest(TestCase):
