@@ -222,8 +222,8 @@ class Result(models.Model):
    ]
    ```
 
-4. if you want to probe certain check
+4. if you want to probe http check for a specific target
 
     ```sh
-    curl -X POST -H "Content-Type: application/json" -d '{"check_id": 1}' http://localhost:8000/api/check-uptime/
+        ./checks/http_check.py -d "https://api.github.com"
     ```

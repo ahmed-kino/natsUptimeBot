@@ -1,5 +1,5 @@
 VERSION ?= ${newrev}
-NAME ?= nats_uptime_bots
+NAME ?= nats_uptime_bot
 PGUSER ?= ${NAME}
 PGPASSWORD ?= admin
 FULL_NAME = ${NAME}:${VERSION}
