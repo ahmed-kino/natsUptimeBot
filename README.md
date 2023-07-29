@@ -53,6 +53,16 @@ class Result(models.Model):
 * Run `make shell` to execute into the container
 * Run format `make format`
 
+## Sort
+
+* Run `make shell` to execute into the container
+* Run sort `make sort`
+
+## Format & Sort
+
+* Run `make shell` to execute into the container
+* Run `make fmt` to format and sort
+
 ## Tests
 
 * Run `make shell` to execute into the container

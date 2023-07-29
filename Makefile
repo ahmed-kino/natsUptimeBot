@@ -18,10 +18,16 @@ build:
 push:
 	docker push ${NAME}:latest
 
+fmt: format sort
+
+
+sort:
+	find . -type f -name \*.py | xargs isort
+
+
 format:
 	find . -type f -name \*.py | xargs black --skip-string-normalization
 
-fmt: format
 
 clean:
 	rm -rf */migrations
