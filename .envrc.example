@@ -1,4 +1,4 @@
-export APP_NAME="nats_uptime_bots"
+export APP_NAME="nats_uptime_bot"
 export PIPENV_VERBOSITY="-1"
 
 # PostgreSQL
