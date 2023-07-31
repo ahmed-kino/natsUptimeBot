@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-uptime-bot-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-uptime-bot
+  template:
+    metadata:
+      labels:
+        app: nats-uptime-bot
+    spec:
+      containers:
+        - name: nats-uptime-bot
+          image: natsuptimebot-nats_uptime_bot:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "admin"
+            - name: POSTGRES_USER
+              value: "nats_uptime_bot"
+            - name: POSTGRES_DB
+              value: "nats_uptime_bot"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_HOST
+              value: postgres-service.pg
