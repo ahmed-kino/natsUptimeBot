@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
         - name: nats-uptime-bot
-          image: natsuptimebot-nats_uptime_bot:latest
-          imagePullPolicy: Never
+          image: neox1993/nats_uptime_bot:latest
           ports:
             - containerPort: 8000
           env:
@@ -28,4 +27,4 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_HOST
-              value: postgres-service.pg
+              value: primary-rw.pg
