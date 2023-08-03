@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Typography, Container } from '@mui/material'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { Typography } from '@mui/material'
 
 type JSONObject =
   | string
@@ -23,8 +23,8 @@ type Check = {
   data: JSONObject
 }
 
-function Checks() {
-  const [data, setData] = useState<Array<Check> | []>([])
+const Checks: FunctionComponent = () => {
+  const [data, setData] = useState<Check[] | []>([])
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/checks`)
@@ -34,20 +34,18 @@ function Checks() {
   }, [])
 
   return (
-    <Container maxWidth="sm">
-      <Typography variant="h4" gutterBottom>
-        {data.map((d, i) => (
-          <div key={i}>
-            <ul>
-              <li>id: {d.id}</li>
-              <li>name: {d.name}</li>
-              <li>target id: {d.target.id}</li>
-              <li>target name: {d.target.domainName}</li>
-            </ul>
-          </div>
-        ))}
-      </Typography>
-    </Container>
+    <Typography>
+      {data.map((d, i) => (
+        <div key={i}>
+          <ul>
+            <li>id: {d.id}</li>
+            <li>name: {d.name}</li>
+            <li>target id: {d.target.id}</li>
+            <li>target name: {d.target.domainName}</li>
+          </ul>
+        </div>
+      ))}
+    </Typography>
   )
 }
 
