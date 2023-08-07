@@ -1,52 +1,19 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
-import { Typography } from '@mui/material'
+import React, { FunctionComponent, useEffect, useState } from "react";
 
-type JSONObject =
-  | string
-  | number
-  | boolean
-  | null
-  | JSONObject[]
-  | { [key: string]: JSONObject }
-
-type ID = number
-
-type Target = {
-  id: ID
-  domainName: string
-}
-
-type Check = {
-  id: ID
-  target: Target
-  name: string
-  data: JSONObject
-}
+import { Check } from "./types";
+import UptimeTable from "./UptimeTable";
 
 const Checks: FunctionComponent = () => {
-  const [data, setData] = useState<Check[] | []>([])
+  const [data, setData] = useState<Check[] | []>([]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/checks`)
       .then((response) => response.json())
       .then((data) => setData(data))
-      .catch((error) => console.error('Error:', error))
-  }, [])
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
-  return (
-    <Typography>
-      {data.map((d, i) => (
-        <div key={i}>
-          <ul>
-            <li>id: {d.id}</li>
-            <li>name: {d.name}</li>
-            <li>target id: {d.target.id}</li>
-            <li>target name: {d.target.domainName}</li>
-          </ul>
-        </div>
-      ))}
-    </Typography>
-  )
-}
+  return <UptimeTable rows={data} />;
+};
 
-export default Checks
+export default Checks;
