@@ -149,9 +149,12 @@ const SideDrawer: React.FC = () => {
   useEffect(() => {
     const currentPath = location.pathname;
 
-    const selectedItem = [...SIDEBAR_ITEMS, ...EXTRA_ITEMS].find(
-      (item) => "/" + item.path === currentPath
-    );
+    const selectedItem = [...SIDEBAR_ITEMS, ...EXTRA_ITEMS].find((item) => {
+      const unSlashedCurrentPath = currentPath.substring(1);
+      if (item.path === "checks" && unSlashedCurrentPath !== "")
+        return unSlashedCurrentPath.startsWith(item.path);
+      return item.path === unSlashedCurrentPath;
+    });
 
     if (selectedItem) {
       setSelectedItem(selectedItem.name);

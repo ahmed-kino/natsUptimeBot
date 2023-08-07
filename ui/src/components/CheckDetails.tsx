@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Check } from "./types";
 import { Link } from "react-router-dom";
+import MonitoringChart from "./MonitoringChart";
 
 const CheckDetails: React.FC = () => {
   const [check, setCheck] = useState<Check | null>(null);
@@ -27,6 +28,7 @@ const CheckDetails: React.FC = () => {
       <p>
         <Link to="/checks">Go to the checks</Link>
       </p>
+      <MonitoringChart />
     </>
   );
 };
