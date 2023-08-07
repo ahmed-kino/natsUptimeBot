@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
@@ -12,7 +12,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Theme, CSSObject } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 type SidebarItem = {
@@ -88,11 +88,15 @@ const Drawer = styled(MuiDrawer)<{ open?: boolean }>(({ theme, open }) => ({
 type SideBarListItemProps = {
   sidebarItem: SidebarItem;
   open: boolean;
+  selected: boolean;
+  onItemClick: () => void;
 };
 
 const SideBarListItem: React.FC<SideBarListItemProps> = ({
   sidebarItem,
   open,
+  selected,
+  onItemClick,
 }) => {
   const Icon = sidebarItem.icon;
 
@@ -106,7 +110,9 @@ const SideBarListItem: React.FC<SideBarListItemProps> = ({
         minHeight: 48,
         justifyContent: open ? "initial" : "center",
         px: 2.5,
+        backgroundColor: selected ? "#252525" : "transparent",
       }}
+      onClick={onItemClick}
     >
       <ListItemIcon
         sx={{
@@ -123,7 +129,9 @@ const SideBarListItem: React.FC<SideBarListItemProps> = ({
 };
 
 const SideDrawer: React.FC = () => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<string>("Dashboard");
+  const location = useLocation();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -133,6 +141,22 @@ const SideDrawer: React.FC = () => {
     setOpen(false);
   };
   const handleDrawer = !open ? handleDrawerOpen : handleDrawerClose;
+
+  const handleItemClick = (name: string) => {
+    setSelectedItem(name);
+  };
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    const selectedItem = [...SIDEBAR_ITEMS, ...EXTRA_ITEMS].find(
+      (item) => "/" + item.path === currentPath
+    );
+
+    if (selectedItem) {
+      setSelectedItem(selectedItem.name);
+    }
+  }, [location]);
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -144,13 +168,25 @@ const SideDrawer: React.FC = () => {
       <Divider />
       <List>
         {SIDEBAR_ITEMS.map((sidebarItem: SidebarItem) => (
-          <SideBarListItem sidebarItem={sidebarItem} open={open} />
+          <SideBarListItem
+            key={sidebarItem.name}
+            sidebarItem={sidebarItem}
+            open={open}
+            selected={selectedItem === sidebarItem.name}
+            onItemClick={() => handleItemClick(sidebarItem.name)}
+          />
         ))}
       </List>
       <Divider />
       <List>
         {EXTRA_ITEMS.map((sidebarItem: SidebarItem) => (
-          <SideBarListItem sidebarItem={sidebarItem} open={open} />
+          <SideBarListItem
+            key={sidebarItem.name}
+            sidebarItem={sidebarItem}
+            open={open}
+            selected={selectedItem === sidebarItem.name}
+            onItemClick={() => handleItemClick(sidebarItem.name)}
+          />
         ))}
       </List>
     </Drawer>
