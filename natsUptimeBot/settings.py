@@ -26,7 +26,13 @@ SECRET_KEY = "django-insecure-nv=&mjf%^vk369$c*pdaa&^vx2nr-$i48+#p=-+p!=9ynj_9d2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# TODO: provide DEV/PROD settings later
+ALLOWED_HOSTS = ["0.0.0.0", "10.0.0.6", "127.0.0.1"]
+
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
 
 
 # Application definition
@@ -39,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "corsheaders",
     "api",
     "nats_integration",
 ]
@@ -46,6 +53,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -130,4 +139,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# TODO: provide DEV/PROD settings later
+# NATS_SERVER_URL = "nats://nats.nats:4222"
 NATS_SERVER_URL = "nats://nats:4222"

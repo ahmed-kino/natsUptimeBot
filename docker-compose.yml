@@ -16,6 +16,15 @@ services:
     image: nats:latest
     ports:
       - "4222:4222"
+  ui:
+    build: ./ui/
+    env_file: ./ui/.envrc
+    volumes:
+      - ./ui:/app:rw
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nats_uptime_bot
 
   postgres:
     image: postgres
