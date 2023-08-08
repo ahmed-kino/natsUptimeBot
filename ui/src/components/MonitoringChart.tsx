@@ -25,7 +25,8 @@ const MonitoringChart: React.FC = () => {
     const generateData = () => {
       const newUptimeData: UptimeData = {
         time: new Date().toLocaleTimeString(),
-        uptime: Math.floor(Math.random() * 1000), // Replace this with your real uptime data
+        // TODO: Replace with real uptime data
+        uptime: Math.floor(Math.random() * 1000),
       };
 
       setData((prevData) => [...prevData, newUptimeData]);

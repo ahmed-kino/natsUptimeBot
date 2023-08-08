@@ -2,8 +2,9 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 
 import { Check } from "./types";
 import UptimeTable from "./UptimeTable";
+import UptimeContainer from "./UptimeContainer";
 
-const Checks: FunctionComponent = () => {
+const CheckList: FunctionComponent = () => {
   const [data, setData] = useState<Check[] | []>([]);
 
   useEffect(() => {
@@ -13,7 +14,11 @@ const Checks: FunctionComponent = () => {
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  return <UptimeTable rows={data} />;
+  return (
+    <UptimeContainer>
+      <UptimeTable rows={data} />
+    </UptimeContainer>
+  );
 };
 
-export default Checks;
+export default CheckList;
