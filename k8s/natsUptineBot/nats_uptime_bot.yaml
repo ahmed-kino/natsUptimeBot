@@ -18,6 +18,7 @@ spec:
           ports:
             - containerPort: 8000
           env:
+            # TODO: For now we're adding the secrets manually
             - name: POSTGRES_PASSWORD
               value: "admin"
             - name: POSTGRES_USER
@@ -28,3 +29,15 @@ spec:
               value: "5432"
             - name: POSTGRES_HOST
               value: primary-rw.pg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-uptime-bot-service
+spec:
+  selector:
+    app: nats-uptime-bot
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
