@@ -3,6 +3,7 @@ NAME ?= nats_uptime_bot
 PGUSER ?= ${NAME}
 PGPASSWORD ?= admin
 FULL_NAME = ${NAME}:${VERSION}
+DOCKER_REGISTRY = neox1993
 
 
 .EXPORT_ALL_VARIABLES:
@@ -10,13 +11,21 @@ FULL_NAME = ${NAME}:${VERSION}
 .PHONY: build
 build:
 	docker build \
-	--tag=${NAME}:latest \
+	--tag=${DOCKER_REGISTRY}/${NAME}:latest \
 	.
 
-# Will use this later
 .PHONY: push
 push:
-	docker push ${NAME}:latest
+	docker push ${DOCKER_REGISTRY}/${NAME}:latest
+
+.PHONY: build-ui
+build-ui:
+	docker build \
+	--tag=${DOCKER_REGISTRY}/${NAME}_ui:latest  -f ui/Dockerfile.prod ui/
+
+.PHONY: push-ui
+push-ui:
+	docker push ${DOCKER_REGISTRY}/${NAME}_ui:latest
 
 fmt: format sort
 
