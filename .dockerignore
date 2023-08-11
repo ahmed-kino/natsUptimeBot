@@ -1,1 +1,4 @@
 ui
+.vscode
+k8s
+.dockerignore

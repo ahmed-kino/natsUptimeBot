@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-uptime-bot-deployment
+  namespace: uptimebot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-uptime-bot
+  template:
+    metadata:
+      labels:
+        app: nats-uptime-bot
+    spec:
+      containers:
+        - name: nats-uptime-bot
+          image: neox1993/nats_uptime_bot:latest
+          ports:
+            - containerPort: 8000
+          env:
+            # TODO: For now we're adding the secrets manually
+            - name: POSTGRES_PASSWORD
+              value: "admin"
+            - name: POSTGRES_USER
+              value: "nats_uptime_bot"
+            - name: POSTGRES_DB
+              value: "nats_uptime_bot"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_HOST
+              value: primary-rw.pg
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-uptime-bot-service
+  namespace: uptimebot
+spec:
+  selector:
+    app: nats-uptime-bot
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
