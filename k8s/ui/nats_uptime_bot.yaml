@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nats-uptime-bot-ui-deployment
+  namespace: uptimebot
 spec:
   replicas: 1
   selector:
@@ -17,11 +18,13 @@ spec:
           image: neox1993/nats_uptime_bot_ui:latest
           ports:
             - containerPort: 3000
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nats-uptime-bot-ui-service
+  namespace: uptimebot
 spec:
   selector:
     app: nats-uptime-bot-ui
