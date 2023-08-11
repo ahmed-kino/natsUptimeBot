@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nats-uptime-bot-deployment
+  namespace: uptimebot
 spec:
   replicas: 1
   selector:
@@ -29,11 +30,13 @@ spec:
               value: "5432"
             - name: POSTGRES_HOST
               value: primary-rw.pg
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: nats-uptime-bot-service
+  namespace: uptimebot
 spec:
   selector:
     app: nats-uptime-bot
