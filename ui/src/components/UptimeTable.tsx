@@ -41,8 +41,12 @@ const UptimeTableRow: React.FC<UptimeTableRowProps> = ({ row, index }) => {
         <div style={{ width: "200px" }}>
           <Chip
             sx={{ width: "100px", borderRadius: 2.5 }}
-            label={TEMP_LABELS[index]}
-            color={TEMP_COLORS[index]}
+            label={
+              TEMP_LABELS[(index + TEMP_LABELS.length) % TEMP_LABELS.length]
+            }
+            color={
+              TEMP_COLORS[(index + TEMP_COLORS.length) % TEMP_COLORS.length]
+            }
             size="small"
           />
         </div>
@@ -67,7 +71,7 @@ const UptimeTable: React.FC<UptimeTableProps> = ({ rows }) => {
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <UptimeTableRow row={row} index={index} />
+            <UptimeTableRow key={index} row={row} index={index} />
           ))}
         </TableBody>
       </Table>

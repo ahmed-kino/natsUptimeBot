@@ -1,10 +1,4 @@
-import {
-  Chip,
-  Typography,
-  Link as MUILink,
-  IconButton,
-  Grid,
-} from "@mui/material";
+import { Chip, Typography, Link as MUILink, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Check } from "./types";
