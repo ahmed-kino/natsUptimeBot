@@ -12,7 +12,7 @@ DOCKER_REGISTRY = neox1993
 build:
 	docker build \
 	--tag=${DOCKER_REGISTRY}/${NAME}:latest \
-	.
+	-f Dockerfile.prod .
 
 .PHONY: run
 run:

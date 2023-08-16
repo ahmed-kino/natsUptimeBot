@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apk update && apk add libpq-dev make
 
-ENV DJANGO_ENV=development
+ENV DJANGO_ENV=production
 
 WORKDIR /code
 
