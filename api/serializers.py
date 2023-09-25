@@ -28,16 +28,26 @@ class CheckSerializer(serializers.ModelSerializer):
 
 
 class ResultSerializer(serializers.ModelSerializer):
-    check_field = CheckSerializer()
+    check_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Result
-        fields = ["id", "check_field", "timestamp", "data"]
+        fields = ["id", "check_id", "timestamp", "data"]
 
     def create(self, validated_data):
-        check_data = validated_data.pop("check_field")
-        target_data = check_data.pop("target")
-        target_instance = Target.objects.get(**target_data)
-        check_instance = Check.objects.get(target=target_instance, **check_data)
+        check_id = validated_data.pop("check_id")
+
+        try:
+            check_instance = Check.objects.get(id=check_id)
+        except Check.DoesNotExist:
+            raise serializers.ValidationError(
+                f"Check with ID '{check_id}' does not exist."
+            )
+
         result = Result.objects.create(check_field=check_instance, **validated_data)
         return result
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["check_id"] = instance.check_field.id
+        return data
