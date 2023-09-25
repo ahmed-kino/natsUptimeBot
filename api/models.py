@@ -7,7 +7,7 @@ class Target(models.Model):
 
 class Check(models.Model):
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     data = models.JSONField(default=dict)
 
 
