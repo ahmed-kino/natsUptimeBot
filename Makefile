@@ -14,6 +14,12 @@ build:
 	--tag=${DOCKER_REGISTRY}/${NAME}:latest \
 	-f Dockerfile.prod .
 
+.PHONY: build-local
+build-local:
+	docker build \
+	--tag=local/${NAME}:latest \
+	-f Dockerfile .
+
 .PHONY: run
 run:
 	docker run -p 8000:8000 ${DOCKER_REGISTRY}/${NAME}:latest 
