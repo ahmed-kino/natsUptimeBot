@@ -1,47 +1,54 @@
 #!/usr/bin/env python3
-
-import argparse
+import base64
+import json
+import sys
 from datetime import datetime
+from time import sleep
 
 import requests
 
 
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-d",
-        "--domain_name",
-        type=str,
-        help="Specify target domain name",
-        required=True,
-    )
-    return parser.parse_args()
-
-
 class HttpCheck:
-    def __init__(self, args):
-        self.domain_name = args.domain_name
+    def __init__(self, event_payload):
+        self.event_payload = event_payload
+        self.data = self._extract_data_from_event_payload(self.event_payload)
+        self.domain_name = self.data["target"]["domain_name"]
 
-    def _convert_timedelta_to_iso(self, elapsed):
-        reference_date = datetime.now()
-        result_datetime = reference_date + elapsed
-        return result_datetime.isoformat()
+    def _extract_data_from_event_payload(self, event_payload):
+        event_payload_dict = json.loads(event_payload)
+        base64_data = event_payload_dict["data"]
+        decoded_data = json.loads(base64.b64decode(base64_data).decode("utf-8"))
+        return decoded_data["body"]
 
-    def run(self):
-        try:
-            response = requests.head(self.domain_name, timeout=5)
+    def _probe(self):
+        response = requests.head(self.domain_name, timeout=5)
 
-            result_dict = {
-                "timestamp": datetime.now(),
-                "domain_name": self.domain_name,
+        response_time = f"{response.elapsed.total_seconds() * 1000:.2f}"
+
+        result_data = {
+            "check_id": self.data["id"],
+            "timestamp": datetime.now().isoformat(),
+            "data": {
                 "status_code": response.status_code,
                 "reason": response.reason,
                 "headers": dict(response.headers),
-                "response_time": f"{response.elapsed.total_seconds() * 1000:.2f} milliseconds",
+                "response_time": response_time,
+                "response_time_str": f"{response_time} milliseconds",
                 "content_length": len(response.content),
-            }
+            },
+        }
 
-            return result_dict
+        post_to_result = requests.post(
+            "http://nats-uptime-bot-service.uptimebot.svc.cluster.local:8000/api/results/",
+            json=result_data,
+        )
+        print(post_to_result)
+
+    def run(self):
+        try:
+            for _ in range(20):
+                self._probe()
+                sleep(int(self.data["data"]["interval"]))
         except requests.exceptions.RequestException as e:
             print("RequestException:", e)
         except Exception as e:
@@ -49,6 +56,6 @@ class HttpCheck:
 
 
 if __name__ == "__main__":
-    args = get_args()
-    check = HttpCheck(args)
-    print(check.run())
+    event_payload = sys.argv[1]
+    check = HttpCheck(event_payload)
+    check.run()
