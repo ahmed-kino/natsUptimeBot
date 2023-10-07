@@ -56,7 +56,7 @@ const AddCheck: React.FC<AddCheckProps> = ({
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [url, setURL] = useState<string>("");
-  const [interval, setInterval] = useState<string>("5");
+  const [requestInterval, setRequestInterval] = useState<string>("5");
   const [maxRetries, setMaxReties] = useState<string>("20");
   const [selectedCheckType, setSelectedCheckType] =
     useState<string>("HTTPS(s)");
@@ -84,7 +84,7 @@ const AddCheck: React.FC<AddCheckProps> = ({
   };
 
   const handleIntervalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInterval(numericValue(event.target.value));
+    setRequestInterval(numericValue(event.target.value));
   };
 
   const handleMaxRetriesChange = (
@@ -139,13 +139,14 @@ const AddCheck: React.FC<AddCheckProps> = ({
         name,
         data: {
           description,
-          interval,
+          interval: requestInterval,
           headers,
           maxRetries,
           check_type: selectedCheckType,
           status_code: selectedStatusCodes,
           method: selectedMethod,
           body,
+          podName: `probing-${name.replace(/\s/g, "").toLowerCase()}`,
         },
       };
       try {
@@ -178,7 +179,7 @@ const AddCheck: React.FC<AddCheckProps> = ({
     setName("");
     setDescription("");
     setURL("");
-    setInterval("5");
+    setRequestInterval("5");
     setMaxReties("20");
     setSelectedCheckType("HTTPS(s)");
     setSelectedStatusCodes(["[200 - 299]"]);
@@ -248,7 +249,7 @@ const AddCheck: React.FC<AddCheckProps> = ({
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                value={interval}
+                value={requestInterval}
                 onChange={handleIntervalChange}
               />
               <TextField

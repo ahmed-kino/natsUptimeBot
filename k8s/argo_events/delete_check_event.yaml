@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: delete-event-source
+  namespace: argo-events
+spec:
+  nats:
+    deleteCheck:
+        url: nats://nats.nats:4222
+        jsonBody: true
+        subject: check.deleted
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: delete-check-sensor
+  namespace: argo-events
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: delete-check-dep
+      eventSourceName: delete-event-source
+      eventName: deleteCheck
+  triggers:
+    - template:
+        name: nats-workflow-delete-trigger
+        k8s:
+          operation: delete
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                name: "this-will-be-overridden-by-the-payload"
+                namespace: argo-events
+          parameters:
+            - src:
+                dependencyName: delete-check-dep
+                dataKey: body.data.podName
+              dest: metadata.name
