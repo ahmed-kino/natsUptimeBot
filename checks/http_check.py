@@ -42,11 +42,12 @@ class HttpCheck:
             "http://nats-uptime-bot-service.uptimebot.svc.cluster.local:8000/api/results/",
             json=result_data,
         )
+        print(result_data)
         print(post_to_result)
 
     def run(self):
         try:
-            for _ in range(20):
+            while True:
                 self._probe()
                 sleep(int(self.data["data"]["interval"]))
         except requests.exceptions.RequestException as e:
