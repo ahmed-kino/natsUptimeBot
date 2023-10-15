@@ -1,4 +1,4 @@
-type JSONObject =
+export type JSONObject =
   | string
   | number
   | boolean
@@ -17,5 +17,12 @@ export type Check = {
   id: ID;
   target: Target;
   name: string;
-  data: JSONObject;
+  data: any;
+};
+
+export type Result = {
+  id: string;
+  message: string;
+  timestamp: string;
+  data: any;
 };

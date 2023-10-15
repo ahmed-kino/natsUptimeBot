@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,58 +6,64 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Check } from "./types";
-import { Chip, ChipPropsColorOverrides } from "@mui/material";
-import { OverridableStringUnion } from "@mui/types";
+import { Check, Result } from "../types";
+import { Chip } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useNATS } from "../modules/NATS/NATSContext";
+import { JetStreamSubscription } from "nats.ws";
+import { SUBJECT } from "../utils/constant";
+import { ChipStatusCode, ChipStatusCodeType } from "../utils/statusCodeColor";
 
-type UptimeTableRowProps = { row: Check; index: number };
-type UptimeTableProps = { rows: Check[] };
+type UptimeTableRowProps = { check: Check };
+type UptimeTableProps = { checks: Check[] };
 
-// TODO: remove this later when we get real data
-const TEMP_COLORS: OverridableStringUnion<
-  | "primary"
-  | "default"
-  | "secondary"
-  | "error"
-  | "info"
-  | "success"
-  | "warning",
-  ChipPropsColorOverrides
->[] = ["error", "success", "warning", "secondary"];
+const UptimeTableRow: React.FC<UptimeTableRowProps> = ({ check }) => {
+  const { subscribe } = useNATS();
+  const [result, setResult] = useState<Result>();
+  const [chipStatusCode, setChipStatusCode] = useState<ChipStatusCodeType>();
 
-const TEMP_LABELS = ["Down", "Up", "Pending", "Maintenance"];
+  useEffect(() => {
+    let localSub: JetStreamSubscription | undefined;
 
-const UptimeTableRow: React.FC<UptimeTableRowProps> = ({ row, index }) => {
+    subscribe(`${SUBJECT}.${check.id}`, (result: Result) => {
+      setResult(result);
+    }).then((subscription) => {
+      localSub = subscription;
+    });
+
+    setChipStatusCode(ChipStatusCode(check, result));
+    return () => {
+      localSub?.unsubscribe();
+    };
+  }, [subscribe, check, result]);
+
   return (
     <TableRow
-      key={row.id}
+      key={check.id}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <TableCell>
-        <Link to={`${row.id}`}>{row.name}</Link>
+        <Link to={`${check.id}`}>{check.name}</Link>
       </TableCell>
       <TableCell>
         <div style={{ width: "200px" }}>
           <Chip
             sx={{ width: "100px", borderRadius: 2.5 }}
-            label={
-              TEMP_LABELS[(index + TEMP_LABELS.length) % TEMP_LABELS.length]
-            }
-            color={
-              TEMP_COLORS[(index + TEMP_COLORS.length) % TEMP_COLORS.length]
-            }
+            label={chipStatusCode?.label}
+            color={chipStatusCode?.color}
             size="small"
           />
         </div>
       </TableCell>
-      <TableCell>2023-08-06 13:49:22</TableCell>
-      <TableCell>200 - OK</TableCell>
+      <TableCell>{result?.timestamp}</TableCell>
+      <TableCell>
+        {result?.data.status_code} - {result?.data.reason}
+      </TableCell>
     </TableRow>
   );
 };
 
-const UptimeTable: React.FC<UptimeTableProps> = ({ rows }) => {
+const UptimeTable: React.FC<UptimeTableProps> = ({ checks }) => {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -70,8 +76,8 @@ const UptimeTable: React.FC<UptimeTableProps> = ({ rows }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <UptimeTableRow key={index} row={row} index={index} />
+          {checks.map((check, index) => (
+            <UptimeTableRow key={index} check={check} />
           ))}
         </TableBody>
       </Table>

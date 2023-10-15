@@ -9,33 +9,34 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+import { Result } from "../types";
 
 interface UptimeData {
   time: string;
   uptime: number;
 }
 
+type MonitoringChartProps = {
+  results: Result[];
+};
+
 const MAX_VISIBLE_DATA = 60;
 
-const MonitoringChart: React.FC = () => {
+const MonitoringChart: React.FC<MonitoringChartProps> = ({ results }) => {
   const [data, setData] = useState<UptimeData[]>([]);
   const [offset, setOffset] = useState<number>(0);
 
   useEffect(() => {
-    const generateData = () => {
-      const newUptimeData: UptimeData = {
-        time: new Date().toLocaleTimeString(),
-        // TODO: Replace with real uptime data
-        uptime: Math.floor(Math.random() * 1000),
+    const data = results.map((result) => {
+      let time = result.timestamp.substring(0, 19);
+      time = time.substring(time.length - 8);
+      return {
+        time,
+        uptime: result.data.response_time,
       };
-
-      setData((prevData) => [...prevData, newUptimeData]);
-    };
-
-    const interval = setInterval(generateData, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+    });
+    setData(data);
+  }, [results]);
 
   useEffect(() => {
     if (data.length > MAX_VISIBLE_DATA) {
@@ -46,9 +47,11 @@ const MonitoringChart: React.FC = () => {
   const visibleData = data.slice(offset, offset + MAX_VISIBLE_DATA);
 
   const xDomain = visibleData.map((point) => point.time);
+  const yMaxValue = Math.max(...visibleData.map((point) => point.uptime));
+  const yDomain = [0, yMaxValue * 3];
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={350}>
       <AreaChart
         data={visibleData}
         margin={{
@@ -59,9 +62,20 @@ const MonitoringChart: React.FC = () => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" domain={xDomain} interval="preserveStartEnd" />
-        <YAxis />
-        <Tooltip />
+        <XAxis dataKey="time" domain={xDomain} />
+        <YAxis domain={yDomain} tickCount={100} />
+        <Tooltip
+          formatter={(value, name, props) => {
+            const time = props.payload.time;
+            const uptime = props.payload.uptime;
+            return [
+              <div>
+                <div key="time">{`Time: ${time}`}</div>
+                <div key="uptime">{`Uptime: ${uptime} ms`}</div>
+              </div>,
+            ];
+          }}
+        />
         <Legend />
         <Area
           isAnimationActive={false}
