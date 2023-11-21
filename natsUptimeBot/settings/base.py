@@ -20,20 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-nv=&mjf%^vk369$c*pdaa&^vx2nr-$i48+#p=-+p!=9ynj_9d2"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-# TODO: provide DEV/PROD settings later
-ALLOWED_HOSTS = ["0.0.0.0", "10.0.0.6", "127.0.0.1"]
-
-
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000",
-]
-
+with open(os.path.join(BASE_DIR, "secret_key.txt")) as f:
+    SECRET_KEY = f.read().strip()
 
 # Application definition
 
@@ -138,7 +127,3 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# TODO: provide DEV/PROD settings later
-# NATS_SERVER_URL = "nats://nats.nats:4222"
-NATS_SERVER_URL = "nats://nats:4222"

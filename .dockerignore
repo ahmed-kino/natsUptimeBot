@@ -2,3 +2,5 @@ ui
 .vscode
 k8s
 .dockerignore
+Dockerfile
+Dockerfile.prod
