@@ -1,18 +1,30 @@
 apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: create-event-source
+  namespace: argo-events
+spec:
+  nats:
+    createCheck:
+      url: nats://nats.nats:4222
+      jsonBody: true
+      subject: check.created
+---
+apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: nats
+  name: create-check-sensor
   namespace: argo-events
 spec:
   template:
     serviceAccountName: operate-workflow-sa
   dependencies:
-    - name: test-dep
-      eventSourceName: nats
-      eventName: example
+    - name: create-check-dep
+      eventSourceName: create-event-source
+      eventName: createCheck
   triggers:
     - template:
-        name: nats-workflow-trigger
+        name: nats-workflow-create-trigger
         k8s:
           operation: create
           source:
@@ -20,13 +32,14 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: nats-workflow-probe-
+                name: this will be overridden by the payload create-check-dep
+                namespace: argo-events
               spec:
                 entrypoint: whalesay
                 arguments:
                   parameters:
                   - name: message
-                    # value will get overridden by the event payload test-dep
+                    # value will get overridden by the event payload create-check-dep
                     value: hello world
                 templates:
                 - name: whalesay
@@ -39,5 +52,9 @@ spec:
                     args: ["{{inputs.parameters.message}}"]
           parameters:
             - src:
-                dependencyName: test-dep
+                dependencyName: create-check-dep
               dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: create-check-dep
+                dataKey: body.data.podName
+              dest: metadata.name

@@ -1,6 +1,7 @@
 ui
 .vscode
 k8s
+checks
 .dockerignore
 Dockerfile
 Dockerfile.prod
