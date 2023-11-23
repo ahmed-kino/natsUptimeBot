@@ -11,6 +11,7 @@ import {
   styled,
   Grid,
 } from "@mui/material";
+import { CHECKS_URL } from "../utils/constant";
 
 interface AddCheckProps {
   open: boolean;
@@ -150,16 +151,13 @@ const AddCheck: React.FC<AddCheckProps> = ({
         },
       };
       try {
-        const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/checks/`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(jsonData),
-          }
-        );
+        const response = await fetch(CHECKS_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(jsonData),
+        });
 
         if (response.ok) {
           const responseData = await response.json();

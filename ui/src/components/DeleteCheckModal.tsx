@@ -1,6 +1,7 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router";
+import { CHECKS_URL } from "../utils/constant";
 
 interface DeleteModalProps {
   open: boolean;
@@ -15,7 +16,7 @@ const DeleteCheckModal: React.FC<DeleteModalProps> = ({
 }) => {
   const navigate = useNavigate();
   const handleDelete = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/checks/${checkId}`, {
+    fetch(`${CHECKS_URL}${checkId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

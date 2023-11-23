@@ -6,6 +6,7 @@ import CheckList from "./components/CheckList";
 import Dashboard from "./components/Dasboard";
 import { CssBaseline, ThemeProvider, createTheme, styled } from "@mui/material";
 import CheckDetails from "./components/CheckDetails";
+import NATSProvider from "./modules/NATS/NATSProvider";
 
 const darkTheme = createTheme({
   palette: {
@@ -38,14 +39,16 @@ const App: React.FC = () => {
       <CssBaseline />
       <UptimeRoot>
         <SideDrawer />
-        <UptimeContent>
-          <Routes>
-            <Route index element={<Dashboard />} />
-            <Route path="checks" element={<CheckList />} />
-            <Route path={`checks/:checkId`} element={<CheckDetails />} />
-            <Route path="*" element={<NoMatch />} />
-          </Routes>
-        </UptimeContent>
+        <NATSProvider>
+          <UptimeContent>
+            <Routes>
+              <Route index element={<Dashboard />} />
+              <Route path="checks" element={<CheckList />} />
+              <Route path={`checks/:checkId`} element={<CheckDetails />} />
+              <Route path="*" element={<NoMatch />} />
+            </Routes>
+          </UptimeContent>
+        </NATSProvider>
       </UptimeRoot>
     </ThemeProvider>
   );

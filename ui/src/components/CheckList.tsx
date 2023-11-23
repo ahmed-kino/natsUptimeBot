@@ -1,13 +1,14 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 
-import { Check } from "./types";
+import { Check } from "../types";
 import UptimeTable from "./UptimeTable";
 import UptimeContainer from "./UptimeContainer";
 import { Button, Typography } from "@mui/material";
 import AddCheck from "./AddCheck";
+import { CHECKS_URL } from "../utils/constant";
 
 const CheckList: FunctionComponent = () => {
-  const [data, setData] = useState<Check[] | []>([]);
+  const [checks, setChecks] = useState<Check[]>([]);
   const [isAddCheckOpen, setIsAddCheckOpen] = useState(false);
   const [fetchCheckList, setFetchCheckList] = useState(false);
 
@@ -16,9 +17,9 @@ const CheckList: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/checks`)
+    fetch(CHECKS_URL)
       .then((response) => response.json())
-      .then((data) => setData(data))
+      .then((checks) => setChecks(checks))
       .catch((error) => console.error("Error:", error))
       .finally(() => {
         setFetchCheckList(false);
@@ -43,7 +44,7 @@ const CheckList: FunctionComponent = () => {
         </Button>
       </UptimeContainer>
       <UptimeContainer>
-        <UptimeTable rows={data} />
+        <UptimeTable checks={checks} />
       </UptimeContainer>
       <AddCheck
         open={isAddCheckOpen}

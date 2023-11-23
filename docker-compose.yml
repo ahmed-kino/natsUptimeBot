@@ -16,6 +16,12 @@ services:
     image: nats:latest
     ports:
       - "4222:4222"
+      - "9222:9222"
+    volumes:
+      - "./nats.conf:/etc/nats/nats.conf"
+      - nats_jetstream_data:/data/jetstream
+    command: ["-c", "/etc/nats/nats.conf"]
+
   ui:
     build: ./ui/
     env_file: ./ui/.envrc
@@ -38,3 +44,6 @@ services:
       interval: "10s"
       timeout: "5s"
       retries: 10
+
+volumes:
+  nats_jetstream_data:
